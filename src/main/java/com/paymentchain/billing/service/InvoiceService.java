@@ -12,5 +12,4 @@ public interface InvoiceService {
     public Invoice createInvoice(Invoice invoice);
     public Optional<Invoice> updateInvoice(Invoice invoice);
     public Optional<Invoice> deleteInvoice(long id);
-    
 }
