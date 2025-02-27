@@ -10,6 +10,6 @@ public interface InvoiceService {
     public List<Invoice> getInvoices();
     public Optional<Invoice> getInvoice(long id);
     public Invoice createInvoice(Invoice invoice);
-    public Optional<Invoice> updateInvoice(Invoice invoice);
+    public Optional<Invoice> updateInvoice(long id, Invoice invoice);
     public Optional<Invoice> deleteInvoice(long id);
 }

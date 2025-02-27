@@ -39,8 +39,8 @@ public class InvoiceServiceImpl implements InvoiceService {
     }
 
     @Override
-    public Optional<Invoice> updateInvoice(Invoice invoice) {
-        Optional<Invoice> invoiceExist = this.invoiceRepository.findById(invoice.getId());
+    public Optional<Invoice> updateInvoice(long id, Invoice invoice) {
+        Optional<Invoice> invoiceExist = this.invoiceRepository.findById(id);
         if (invoiceExist.isPresent()) {
 
             log.info("Updating invoice with id " + invoice.getId());
