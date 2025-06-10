@@ -18,8 +18,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
 
-    private InvoiceRequestMapper invoiceRequestMapper;
-    private InvoiceResponseMapper invoiceResponseMapper;
+    private final InvoiceRequestMapper invoiceRequestMapper;
+    private final InvoiceResponseMapper invoiceResponseMapper;
 
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository,
                               InvoiceRequestMapper invoiceRequestMapper,

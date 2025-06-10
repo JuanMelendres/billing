@@ -1,12 +1,10 @@
 package com.paymentchain.billing.mapstruct;
 
 import com.paymentchain.billing.dto.InvoiceResponseDTO;
-import com.paymentchain.billing.dto.InvoiceRequestDTO;
 import com.paymentchain.billing.entities.Invoice;
 import org.mapstruct.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mapper(
         componentModel = "spring",
@@ -19,13 +17,13 @@ public interface InvoiceResponseMapper {
     @Mapping(source = "id", target = "invoiceId")
     InvoiceResponseDTO mapInvoiceToInvoiceResponseDTO(Invoice invoice);
 
-    List<InvoiceResponseDTO> mapInvoiceToInvoiceResponseDTO(List<Invoice> invoice);
+    List<InvoiceResponseDTO> mapInvoiceToInvoiceResponseDTO(List<Invoice> invoiceList);
 
-    @InheritInverseConfiguration
-    Invoice mapInvoiceRequestDTOtoInvoice(InvoiceResponseDTO invoiceRequestDTO);
+    @Mapping(source = "invoiceId", target = "id")
+    @Mapping(source = "customer", target = "customerId")
+    Invoice mapInvoiceResponseDTOtoInvoice(InvoiceResponseDTO dto);
 
-    @InheritInverseConfiguration
-    List<Invoice> mapInvoiceRequestDTOtoInvoices(List<InvoiceRequestDTO> invoiceRequestDTO);
-
-    Optional<InvoiceResponseDTO> mapInvoiceToInvoiceResponseDTO(Optional<Invoice> byId);
+    @Mapping(source = "invoiceId", target = "id")
+    @Mapping(source = "customer", target = "customerId")
+    List<Invoice> mapInvoiceResponseDTOsToInvoices(List<InvoiceResponseDTO> dtoList);
 }

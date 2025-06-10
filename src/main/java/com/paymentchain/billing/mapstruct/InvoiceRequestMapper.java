@@ -14,6 +14,7 @@ import java.util.List;
 public interface InvoiceRequestMapper {
 
     @Mapping(source = "customer", target = "customerId")
+    @Mapping(target = "id", ignore = true)
     Invoice mapInvoiceRequestDTOtoInvoice(InvoiceRequestDTO invoiceRequestDTO);
 
     List<Invoice> mapInvoiceRequestDTOtoInvoices(List<InvoiceRequestDTO> invoiceRequestDTO);
