@@ -1,6 +1,10 @@
 package com.paymentchain.billing.service;
 
+import com.paymentchain.billing.dto.InvoiceRequestDTO;
+import com.paymentchain.billing.dto.InvoiceResponseDTO;
 import com.paymentchain.billing.entities.Invoice;
+import com.paymentchain.billing.mapstruct.InvoiceRequestMapper;
+import com.paymentchain.billing.mapstruct.InvoiceResponseMapper;
 import com.paymentchain.billing.repository.InvoiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,58 +18,87 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
 
-    public InvoiceServiceImpl(InvoiceRepository invoiceRepository) {
+    private InvoiceRequestMapper invoiceRequestMapper;
+    private InvoiceResponseMapper invoiceResponseMapper;
+
+    public InvoiceServiceImpl(InvoiceRepository invoiceRepository,
+                              InvoiceRequestMapper invoiceRequestMapper,
+                              InvoiceResponseMapper invoiceResponseMapper) {
         this.invoiceRepository = invoiceRepository;
+        this.invoiceRequestMapper = invoiceRequestMapper;
+        this.invoiceResponseMapper = invoiceResponseMapper;
     }
 
     @Override
-    public List<Invoice> getInvoices() {
-        log.info("Get Invoices");
-        return this.invoiceRepository.findAll();
+    public List<InvoiceResponseDTO> getInvoices() {
+
+        List<Invoice> invoices = invoiceRepository.findAll();
+
+        return invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoices);
     }
 
     @Override
-    public Optional<Invoice> getInvoice(long id) {
+    public Optional<InvoiceResponseDTO> getInvoice(long id) {
         log.info("Get customer with id {}", id);
 
-        return this.invoiceRepository.findById(id);
-    }
+        Invoice invoice = invoiceRepository.findById(id).orElse(null);
 
-    @Override
-    public Invoice createInvoice(Invoice invoice) {
-        log.info("Creating new invoice: {}", invoice);
-
-        return this.invoiceRepository.save(invoice);
-    }
-
-    @Override
-    public Optional<Invoice> updateInvoice(long id, Invoice invoice) {
-        Optional<Invoice> invoiceExist = this.invoiceRepository.findById(id);
-        if (invoiceExist.isPresent()) {
-
-            log.info("Updating invoice with id " + invoice.getId());
-
-            invoiceExist.get().setAmount(invoice.getAmount());
-            invoiceExist.get().setDetail(invoice.getDetail());
-            invoiceExist.get().setNumber(invoice.getNumber());
-
-            this.invoiceRepository.save(invoiceExist.get());
-
-            return invoiceExist;
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Invoice> deleteInvoice(long id) {
-        Optional<Invoice> invoiceExist = this.invoiceRepository.findById(id);
-
-        if (invoiceExist.isPresent()) {
-            log.info("Deleting invoice with id: " + id);
-            log.info("Invoice: " + invoiceExist.get().toString());
-            this.invoiceRepository.delete(invoiceExist.get());
+        if (invoice == null) {
+            return Optional.empty();
         }
 
-        return Optional.empty();
+        InvoiceResponseDTO invoiceResponseDTO = invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoice);
+
+        return Optional.of(invoiceResponseDTO);
+    }
+
+    @Override
+    public InvoiceResponseDTO createInvoice(InvoiceRequestDTO invoiceRequest) {
+        log.info("Creating new invoice: {}", invoiceRequest);
+
+        Invoice invoice = invoiceRequestMapper.mapInvoiceRequestDTOtoInvoice(invoiceRequest);
+
+        this.invoiceRepository.save(invoice);
+
+        return invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoice);
+    }
+
+    @Override
+    public Optional<InvoiceResponseDTO> updateInvoice(long id, InvoiceRequestDTO invoiceRequest) {
+
+        Invoice invoiceExist = invoiceRepository.findById(id).orElse(null);
+
+        if (invoiceExist == null) {
+            return Optional.empty();
+        }
+
+        invoiceExist.setAmount(invoiceRequest.getAmount());
+        invoiceExist.setDetail(invoiceRequest.getDetail());
+        invoiceExist.setNumber(invoiceRequest.getNumber());
+
+        this.invoiceRepository.save(invoiceExist);
+
+        InvoiceResponseDTO invoiceResponseDTO = invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoiceExist);
+
+        return Optional.of(invoiceResponseDTO);
+
+    }
+
+    @Override
+    public Optional<InvoiceResponseDTO> deleteInvoice(long id) {
+        Invoice invoiceExist = invoiceRepository.findById(id).orElse(null);
+
+        if (invoiceExist == null) {
+            return Optional.empty();
+        }
+
+        log.info("Deleting invoice with id: " + id);
+        log.info("Invoice: " + invoiceExist);
+        
+        this.invoiceRepository.delete(invoiceExist);
+
+        InvoiceResponseDTO invoiceResponseDTO = invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoiceExist);
+
+        return Optional.of(invoiceResponseDTO);
     }
 }

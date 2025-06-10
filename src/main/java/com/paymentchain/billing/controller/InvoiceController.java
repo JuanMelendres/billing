@@ -1,7 +1,13 @@
 package com.paymentchain.billing.controller;
 
+import com.paymentchain.billing.dto.InvoiceRequestDTO;
+import com.paymentchain.billing.dto.InvoiceResponseDTO;
 import com.paymentchain.billing.entities.Invoice;
 import com.paymentchain.billing.service.InvoiceServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "Billing API", description = "This API serve all functionality for management Invoices")
 @Slf4j
 @RestController
 @RequestMapping("/v1/invoice")
@@ -21,10 +28,16 @@ public class InvoiceController {
         this.invoiceService = invoiceService;
     }
 
+    @Operation(description = "Return all transaction bundled into Response",
+        summary = "Return 202 if no data found")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping()
-    public ResponseEntity<List<Invoice>> getInvoice() {
+    public ResponseEntity<List<InvoiceResponseDTO>> getInvoice() {
         try {
-            List<Invoice> customers = this.invoiceService.getInvoices();
+            List<InvoiceResponseDTO> customers = this.invoiceService.getInvoices();
             return new ResponseEntity<>(customers, HttpStatus.OK);
         }
         catch (Exception e) {
@@ -34,10 +47,10 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getInvoice(@PathVariable long id) {
+    public ResponseEntity<InvoiceResponseDTO> getInvoice(@PathVariable long id) {
         log.info("Get invoice with id {}", id);
         try {
-            Optional<Invoice> invoiceExist = this.invoiceService.getInvoice(id);
+            Optional<InvoiceResponseDTO> invoiceExist = this.invoiceService.getInvoice(id);
             return invoiceExist
                     .map(invoice -> new ResponseEntity<>(invoice, HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -49,10 +62,9 @@ public class InvoiceController {
     }
 
     @PostMapping()
-    public ResponseEntity<Invoice> createInvoice(@RequestBody Invoice invoice) {
-        log.info("Create invoice {}", invoice.getId());
+    public ResponseEntity<InvoiceResponseDTO> createInvoice(@RequestBody InvoiceRequestDTO invoice) {
         try {
-            Invoice newInvoice = this.invoiceService.createInvoice(invoice);
+            InvoiceResponseDTO newInvoice = this.invoiceService.createInvoice(invoice);
             return new ResponseEntity<>(newInvoice, HttpStatus.CREATED);
         }
         catch (Exception e) {
@@ -62,10 +74,10 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Invoice> updateInvoice(long id, @RequestBody Invoice invoice) {
+    public ResponseEntity<InvoiceResponseDTO> updateInvoice(long id, @RequestBody InvoiceRequestDTO invoice) {
         log.info("Update invoice with id {}", id);
         try {
-            Optional<Invoice> invoiceExist = this.invoiceService.updateInvoice(id, invoice);
+            Optional<InvoiceResponseDTO> invoiceExist = this.invoiceService.updateInvoice(id, invoice);
             return invoiceExist
                     .map(updatedInvoice -> new ResponseEntity<>(updatedInvoice, HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -77,10 +89,10 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Invoice> deleteInvoice(@PathVariable long id) {
+    public ResponseEntity<InvoiceResponseDTO> deleteInvoice(@PathVariable long id) {
         log.info("Delete invoice with id {}", id);
         try {
-            Optional<Invoice> invoiceExist = this.invoiceService.deleteInvoice(id);
+            Optional<InvoiceResponseDTO> invoiceExist = this.invoiceService.deleteInvoice(id);
             return invoiceExist
                     .map(invoice -> new ResponseEntity<>(invoice, HttpStatus.OK))
                     .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

@@ -1,11 +1,15 @@
 package com.paymentchain.billing.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Schema(name = "InvoiceRequest", description = "Model represent a invoice on database")
-public class InvoiceRequest {
+public class InvoiceRequestDTO {
 
     @Schema(name = "customer", requiredMode = Schema.RequiredMode.REQUIRED,
             example = "2", defaultValue = "1",
