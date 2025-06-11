@@ -2,7 +2,11 @@ package com.paymentchain.billing.mapstruct;
 
 import com.paymentchain.billing.dto.InvoiceRequestDTO;
 import com.paymentchain.billing.entities.Invoice;
-import org.mapstruct.*;
+import org.mapstruct.InjectionStrategy;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.InheritInverseConfiguration;
 
 import java.util.List;
 

@@ -63,6 +63,7 @@ public class InvoiceController {
 
     @PostMapping()
     public ResponseEntity<InvoiceResponseDTO> createInvoice(@RequestBody InvoiceRequestDTO invoice) {
+        log.info("Creating invoice ");
         try {
             InvoiceResponseDTO newInvoice = this.invoiceService.createInvoice(invoice);
             return new ResponseEntity<>(newInvoice, HttpStatus.CREATED);

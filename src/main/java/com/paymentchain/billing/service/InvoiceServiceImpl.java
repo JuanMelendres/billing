@@ -33,6 +33,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<InvoiceResponseDTO> getInvoices() {
 
         List<Invoice> invoices = invoiceRepository.findAll();
+        log.info("getInvoices: invoices = {}", invoices);
 
         return invoiceResponseMapper.mapInvoiceToInvoiceResponseDTO(invoices);
     }

@@ -1,27 +1,14 @@
 package com.paymentchain.billing;
 
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class BillingApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BillingApplication.class, args);
-    }
-
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .components(new Components())
-                .info(new Info()
-                        .title("Billing API")
-                        .description("This is the Billing API")
-                        .version("1.0.0"));
     }
 
 }
